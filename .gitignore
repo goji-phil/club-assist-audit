@@ -1,0 +1,11 @@
+# Raw video footage — too large for GitHub
+video/
+
+# Screenshot assets — large binaries, regenerate from video
+screenshots/
+
+# Auto-generated plugin bundle — rebuild with `node figjam-plugin/build.js`
+figjam-plugin/code.js
+
+# macOS
+.DS_Store
