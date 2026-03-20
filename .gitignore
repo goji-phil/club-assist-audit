@@ -1,8 +1,8 @@
 # Raw video footage — too large for GitHub
 video/
 
-# Screenshot assets — large binaries, regenerate from video
-screenshots/
+# Full-res app recording frames — use app-recording-sm/ instead
+screenshots/app-recording/
 
 # Auto-generated plugin bundle — rebuild with `node figjam-plugin/build.js`
 figjam-plugin/code.js
