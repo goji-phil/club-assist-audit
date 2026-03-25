@@ -192,6 +192,7 @@
   // Returns the estimated height of a pain-point section
   // (header bar + optional screenshot row + stickies in a grid).
   function calcSectionH(section) {
+    if (section.moduleDivider) return 80;
     var rows = Math.ceil(section.stickies.length / STICKIES_PER_ROW);
     var stickyBlockH = rows * (STICKY_H + STICKY_GAP);
     var ssBlockH = (section.screenshots && section.screenshots.length > 0)
@@ -208,7 +209,7 @@
   );
   curY += 72;
   makeText(
-    'Sources: FigJam strategy sprint board · 3 Granola workshop notes · 87 screen-recording frames · promotional e-invoicing video · 2026-03-20',
+    'Sources: FigJam strategy sprint board · 3 Granola workshop notes · 87 app frames · promo video · inventory module recording (71 frames) · 2026-03-24',
     SX, curY,
     { fontSize: 18, color: { r: 0.4, g: 0.4, b: 0.4 }, width: 4000 }
   );
@@ -285,6 +286,15 @@
     var sCol = sIdx % SECTIONS_PER_ROW;
     var secX = SX + sCol * (SECTION_W + SECTION_GAP);
     var secY = rowY[sRow];
+
+    // Module divider — full-width navy heading bar
+    if (sec.moduleDivider) {
+      var divW = SECTIONS_PER_ROW * (SECTION_W + SECTION_GAP) - SECTION_GAP;
+      var divFrame = makeFrame(SX, secY, divW, 56, HEADER_COLOR, sec.title + '_divider', true);
+      divFrame.cornerRadius = 8;
+      makeText(sec.title, 24, 16, { fontSize: 20, bold: true, color: WHITE, width: divW - 48 }, divFrame);
+      continue;
+    }
 
     // Section header bar
     var headerFrame = makeFrame(secX, secY, SECTION_W, 48, HEADER_COLOR, sec.title + '_header', true);
@@ -392,7 +402,24 @@
   }
   curY += AF_H + 60;
 
-  // ── 12. Zoom to fit all content ───────────────────────────
+  // ── 12. Row 5 — Inventory module key frames ───────────────
+  if (FINDINGS_DATA.inventoryFrames && FINDINGS_DATA.inventoryFrames.length > 0) {
+    makeText(
+      'Inventory Management Module — Key Screens',
+      SX, curY,
+      { fontSize: 24, bold: true, color: HEADER_COLOR, width: 3000 }
+    );
+    curY += 44;
+    var invX = SX;
+    for (var invI = 0; invI < FINDINGS_DATA.inventoryFrames.length; invI++) {
+      var invF = FINDINGS_DATA.inventoryFrames[invI];
+      placeImage(invF.key, invX, curY, AF_W, AF_H, invF.label);
+      invX += AF_W + AF_GAP;
+    }
+    curY += AF_H + 60;
+  }
+
+  // ── 13. Zoom to fit all content ───────────────────────────
   figma.viewport.scrollAndZoomIntoView(targetPage.children);
 
   figma.notify(
