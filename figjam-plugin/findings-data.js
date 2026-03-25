@@ -205,6 +205,63 @@ module.exports = {
         { text: "Club Assist brand only present on login screen — no presence in primary workflow screens", severity: 2 },
         { text: "Battery Benefits competitive pricing table is a strong sales tool — needs native-quality presentation not a web view", severity: 2 }
       ]
+    },
+
+    // ── Inventory Management Module ──────────────────────────
+    { title: "INVENTORY MANAGEMENT MODULE", moduleDivider: true, stickies: [] },
+    {
+      title: "Inventory: Navigation & Wayfinding",
+      screenshots: ["inv-nav", "inv-assign"],
+      stickies: [
+        { text: "No section header for the 11 inventory items in side-drawer — visually indistinguishable from GENERAL nav items below (INV-04)", severity: 2 },
+        { text: "\"Confirm Assignment\" button disabled with zero explanation of prerequisites — dead end with no diagnostic or recovery path (INV-05)", severity: 3 },
+        { text: "Unlabelled FAB (+) is the only way to add rows in Adjustment — no affordance, hidden primary action (INV-16)", severity: 2 },
+        { text: "AVBL / RSVD / ADJ abbreviations appear across 6 screens but are never defined anywhere in the module (INV-15)", severity: 2 },
+        { text: "\"Scan VIN or QR Code\" label on Location Assignment is wrong context — VIN is vehicle terminology, not inventory (INV-24)", severity: 3 }
+      ]
+    },
+    {
+      title: "Inventory: Error Colours & Validation",
+      screenshots: ["inv-adj-valid", "inv-receiving"],
+      stickies: [
+        { text: "Negative AVBL QTY (\u20133) displayed without any visual alert — data integrity issue invisible to technician making stocking decisions (INV-01)", severity: 4 },
+        { text: "Green text used for all error messages throughout module — semantic inversion; technicians read errors as success states (INV-02)", severity: 3 },
+        { text: "Validation errors shown on form load before any user interaction — \"Reason is required.\" fires on blank Adjustment screen (INV-03)", severity: 3 },
+        { text: "\"Complete Receiving\" button active with empty required Reference Number — allows broken record submission past a green warning (INV-06)", severity: 3 },
+        { text: "Transfer quantity validation deferred to Confirm step — over-qty entry only caught after user commits (INV-07)", severity: 3 },
+        { text: "\"Warning\" modal fires on load for routine empty states (no pending transfers) — severity mislabel creates false alarm (INV-09)", severity: 3 }
+      ]
+    },
+    {
+      title: "Inventory: Quantity Entry & Table Display",
+      screenshots: ["inv-adj", "inv-myinv"],
+      stickies: [
+        { text: "No row deletion on Adjustment table — user must submit unwanted rows or abandon and restart (INV-10)", severity: 2 },
+        { text: "Full QWERTY keyboard on quantity fields — numeric pad required for gloved-hand field use (INV-11)", severity: 2 },
+        { text: "Inline table-cell editing for qty entry — non-standard iOS pattern, no visible affordance, inaccessible with gloves (INV-12)", severity: 3 },
+        { text: "Redundant Item + Description columns in My Inventory both display the same code — halves usable table width on small screen (INV-14)", severity: 3 },
+        { text: "My Stock Count shows no reference/expected quantities — technician must hold correct count in memory during physical cycle count (INV-20)", severity: 2 }
+      ]
+    },
+    {
+      title: "Inventory: Scan & Item Selection",
+      screenshots: ["inv-lookup", "inv-stockcount"],
+      stickies: [
+        { text: "No barcode scan path for item selection across 5 screens (Adjustment, Lookup, Stock Count, Transfer, Receiving) — every SKU requires dropdown scroll (INV-08)", severity: 3 },
+        { text: "\"RSVD QTY\" appears in My Inventory table header but is never defined or explained anywhere in the module (INV-17)", severity: 3 },
+        { text: "No scan path for stock count entry — every physical count requires keyboard interaction rather than scan-to-confirm (INV-18)", severity: 3 },
+        { text: "My Inventory has no search, filter, or sort — catalogues of 20+ SKUs require full-list scroll to locate a specific item (INV-19)", severity: 3 }
+      ]
+    },
+    {
+      title: "Inventory: Transfer, Receiving & Flow",
+      screenshots: ["inv-transfer", "inv-recv-warn"],
+      stickies: [
+        { text: "Ambiguous back-navigation during active stock count — no confirmation before discarding count progress (INV-21)", severity: 2 },
+        { text: "Transfer Review visible only to sender — recipient sees no \"pending\" view before the transfer arrives (INV-22)", severity: 2 },
+        { text: "Inventory Adjustment shows large blank placeholder image when no item image available — wastes ~20% of screen height (INV-13)", severity: 1 },
+        { text: "Negative AVBL QTY root cause never surfaced — system silently accepts a state where more stock is committed than exists (INV-25)", severity: 2 }
+      ]
     }
   ],
 
@@ -220,7 +277,19 @@ module.exports = {
     "Bottom nav = workflow, drawer = support/settings — architecturally correct distinction",
     "Selective availability of Training Material buttons (active vs. inactive) — right concept",
     "Warranty Calculator co-located with Battery Details estimate entry — appropriate for warranty claims",
-    "\"Months Used\" figure in Warranty result — right data to surface; needs framing (of N months)"
+    "\"Months Used\" figure in Warranty result — right data to surface; needs framing (of N months)",
+    // Inventory module positive patterns
+    "Inventory: Location confirmation shown on-screen before assignment proceeds — prevents mislabelling",
+    "Inventory: Available QTY co-located with On-Hand and Reserved on Lookup screen — right data density",
+    "Inventory: Reason picker constrains free-text input — prevents unstructured reason data entry",
+    "Inventory: Adjustment Review summary shown before final submission — confirmation step is correct",
+    "Inventory: Discrepancy dialog surfaces recount vs. adjustment choice — system catches count mismatch",
+    "Inventory: Transfer destination uses known location list — no free-text location entry",
+    "Inventory: Receiving screen shows reference number prominently — anchors task to source document",
+    "Inventory: On-Hand QTY visible inline on My Inventory without drilling — right level of detail",
+    "Inventory: QR scan offered as primary option on Location Assignment — scan-first intent is correct",
+    "Inventory: Side-drawer consolidates all 11 module screens — keeps main nav uncluttered",
+    "Inventory: Adjustment history accessible via Adjustment Review — supports auditability"
   ],
 
   // ── UX Audit Framework (Row 4, right column) ──────────────
@@ -269,5 +338,19 @@ module.exports = {
     { key: "af-19", label: "Battery Benefits — white web view in dark app",        path: "screenshots/app-recording-sm/frame_0052.png" },
     { key: "af-20", label: "Climate Map — blank loading state",                    path: "screenshots/app-recording-sm/frame_0055.png" },
     { key: "af-21", label: "Climate Map — grey intermediate (API URL visible)",    path: "screenshots/app-recording-sm/frame_0056.png" }
+  ],
+
+  // ── Inventory module key frames (Row 5) ───────────────────
+  inventoryFrames: [
+    { key: "inv-nav",       label: "Side-drawer — no inventory section header (GENERAL visible)", path: "screenshots/inventory/frame_0057.png" },
+    { key: "inv-assign",    label: "Location Assignment — \"Scan VIN or QR Code\" + disabled Confirm", path: "screenshots/inventory/frame_0003.png" },
+    { key: "inv-adj-valid", label: "Inventory Adjustment — green \"Reason is required.\" on load",  path: "screenshots/inventory/frame_0007.png" },
+    { key: "inv-adj",       label: "Inventory Adjustment — unlabelled FAB + inline table",          path: "screenshots/inventory/frame_0017.png" },
+    { key: "inv-lookup",    label: "Inventory Lookup — negative AVBL QTY (\u20133), no visual alert", path: "screenshots/inventory/frame_0030.png" },
+    { key: "inv-myinv",     label: "My Inventory — redundant columns, no search or filter",        path: "screenshots/inventory/frame_0037.png" },
+    { key: "inv-stockcount",label: "My Stock Count — no reference qty, inline cell editing",       path: "screenshots/inventory/frame_0040.png" },
+    { key: "inv-transfer",  label: "Transfer — destination + items, inline Transfer QTY",          path: "screenshots/inventory/frame_0050.png" },
+    { key: "inv-recv-warn", label: "Receive Transfer — \"Warning\" modal for routine empty state", path: "screenshots/inventory/frame_0058.png" },
+    { key: "inv-receiving", label: "Receiving — green error + inline qty editing + QWERTY",        path: "screenshots/inventory/frame_0068.png" }
   ]
 };

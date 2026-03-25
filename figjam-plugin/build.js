@@ -14,6 +14,7 @@ const templateSource = fs.readFileSync('./template.js', 'utf8');
 const imageEntries = [
   ...(findingsData.boardScreenshots || []),
   ...(findingsData.appFrames || []),
+  ...(findingsData.inventoryFrames || []),
 ];
 
 // ── Base64-encode each image ───────────────────────────────────────────────
@@ -43,6 +44,7 @@ const cleanData = {
   ...findingsData,
   boardScreenshots: stripPaths(findingsData.boardScreenshots),
   appFrames: stripPaths(findingsData.appFrames),
+  inventoryFrames: stripPaths(findingsData.inventoryFrames || []),
 };
 
 // ── Build header ───────────────────────────────────────────────────────────
