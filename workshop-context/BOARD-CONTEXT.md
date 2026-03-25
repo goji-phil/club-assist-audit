@@ -62,7 +62,7 @@
 |---|---|---|
 | Battery fitment guide | Core / always-on | Every technician; searches by VIN or Make/Model/Year/Engine |
 | E-invoicing | Most-used add-on; manually enabled per technician by station manager | Requires logout/login to activate after permission granted |
-| Inventory / Stock Assist | Limited deployment | Enabled per technician |
+| Inventory / Stock Assist | Limited deployment — restricted add-on enabled per technician by station manager | The module adds 11 screens to the side-drawer: Assign Location, Unassign Location, Inventory Adjustment, Adjustment Review, Inventory Lookup, My Inventory, My Stock Count, Transfer, Receive Transfer, Transfer Review, and Receiving. Covers the full inventory lifecycle: assigning truck/warehouse locations, recording quantity adjustments with reason codes, conducting physical cycle counts, initiating and receiving inter-location stock transfers, and manually receiving stock against a reference number. Used by technicians pre-job (check stock) and post-job (adjust for batteries used). A station manager desktop counterpart exists for configuration, adjustment review, and station-level dashboards — not yet captured in audit; flagged for follow-up. |
 | Technician Scorecard | Club-level decision | Tracks conversion, battery test %, updates nightly at 6:30 PM |
 | Prior to 1990 | Tab bar item | Edge-case legacy vehicle lookup |
 | Warranty Calculator | Tab bar item | Manual battery/date entry; future: auto-calculate for registered batteries |
@@ -223,6 +223,20 @@ Salesforce → MVC1000 tester → Toolbox app → E-invoicing → member email r
 - Sync frequency may be excessive (every 20 minutes)
 - Offline state is a hard block: "Your device appears to be offline" with no draft/queue mode for poor coverage areas
 - Permission changes (new module access) only take effect after logout/login
+
+### Inventory Management Module
+- **[Critical]** Negative AVBL QTY (-3) displayed in Inventory Lookup without any visual differentiation — a data integrity alert (more stock committed than exists) is invisible to the technician making stocking decisions
+- **[Major]** Green text used for inline validation errors throughout the module (Inventory Adjustment, Receiving) — semantic inversion of error/success colour; technicians read errors as success states; confirms the same shared-component issue documented in the main e-invoicing audit
+- **[Major]** Premature validation on form mount: "Reason is required." and "Reference number is required." appear before any user interaction on Inventory Adjustment and Receiving; same root cause as the main app's pre-emptive estimate validation
+- **[Major]** "Confirm Assignment" button disabled on Location Assignment with zero explanation of prerequisites — user is in a dead end with no diagnostic or recovery path
+- **[Major]** "Complete Receiving" button enabled despite required Reference Number field being empty — a user who ignores the green (error-coloured) validation message can submit an incomplete record
+- **[Major]** Transfer quantity validation deferred to confirmation step — user can enter impossible quantities (exceeding available stock) without real-time feedback; only caught on Confirm Transfer tap
+- **[Major]** No barcode scan path for item selection across five screens (Adjust Item, Inventory Lookup, My Stock Count, Transfer, Receiving) — every SKU lookup requires dropdown scrolling; a scan-to-select component would transform field usability
+- **[Major]** Inline table-cell editing for quantity entry (My Stock Count, Transfer, Receiving) — non-standard iOS pattern, no visible affordance, inaccessible with gloved hands
+- **[Major]** No search, filter, or sort on My Inventory — catalogues of 20+ SKUs require full-list scrolling to locate a specific item
+- **[Major]** "Warning" modal fires on load for normal empty states on Receive Transfer and Transfer Review — severity mislabelling creates false alarm for a routine "no records" condition
+- **[Moderate]** Inventory section in side-drawer has no section header — the 11 inventory items are visually indistinguishable from general app navigation items; the GENERAL section below has a header but inventory does not
+- **[Moderate]** AVBL QTY, RSVD QTY, and ADJ QTY abbreviations appear across six screens but are never defined or spelled out; new technicians must rely on training to interpret column data
 
 ---
 
@@ -442,6 +456,19 @@ Documented workflow mapped in workshop 1. Key stages:
 | Estimate | Invoice creation form | Double modal interrupt; green errors; no tier indicator; conflicting FABs |
 | Media Library | Documents, TSBs, training videos | Per-keystroke search; blank empty state; truncated titles; no vehicle linking |
 | Invoice History | Prior invoices | Via hamburger → Invoices; no search/filter/customer name/status |
+| — Inventory Management Module — | | Restricted add-on; enabled per technician; accessed via side-drawer only |
+| Navigation Menu (Inventory) | Side-drawer wayfinding for all 11 inventory items | No section header; items unlabelled as inventory; GENERAL section below has a header |
+| Location Assignment | Assign an inventory location via QR scan or dropdown | "Scan VIN or QR Code" wrong-context label; Confirm Assignment disabled with no prerequisite explanation |
+| Inventory Adjustment | Record manual quantity delta with reason code | Unlabelled FAB as primary action; green error text; premature validation; no row-delete |
+| Adjust Item (sub-screen) | Select SKU and enter adjustment delta | Dropdown-only item selection; full QWERTY keyboard on numeric field; no available qty visible |
+| Adjustment Review | Read-only 7-day adjustment history | Email address in "By" column; blank image placeholder in detail view; no date window control |
+| Inventory Lookup | Per-location stock breakdown for a selected SKU | Negative AVBL QTY shown without visual alert (critical data integrity issue); no total row; no scan |
+| My Inventory | Full catalogue with on-hand and reserved quantities | Redundant Item + Description columns; no search/sort/filter; missing AVBL QTY column |
+| My Stock Count | Physical cycle count entry for current location | No barcode scan; inline cell editing; no reference quantities shown; ambiguous back-navigation |
+| Transfer | Initiate stock movement to another location | Two-section scroll (destination + quantities); selected destination scrolls off-screen; validation deferred to confirm |
+| Receive Transfer | View and accept incoming transfers | "Warning" modal for normal empty state; scope: Open + Last 7 days |
+| Transfer Review | View outgoing transfer history | "Warning" modal for normal empty state; symmetric with Receive Transfer |
+| Receiving (Manual) | Record stock receipt against a reference number | Green error text; premature validation; Complete Receiving button active when required field empty; inline cell editing |
 
 ---
 
@@ -514,6 +541,7 @@ Audit the full Toolbox field technician workflow against heuristic and task-flow
 | Multilingual content & layout | String length variability (ES/FR-CA); font scaling |
 | Outdoor readability | Contrast ratios; tap target sizes; picker legibility in sunlight |
 | Job context | Dispatch/member info surfaced throughout; no anonymous search |
+| Inventory Management (Stock Assist) | Location assignment, adjustments, cycle counts, inter-location transfers, receiving |
 
 ### Prioritization Framework
 
